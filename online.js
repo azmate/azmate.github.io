@@ -19,6 +19,9 @@ export function createOnline(x) {
   const saveSes = () => { try { sessionStorage.setItem(SKEY, JSON.stringify({ code: lastCode, key: myKey })); } catch { /* yaddaş yoxdur */ } };
   const clearSes = () => { try { sessionStorage.removeItem(SKEY); } catch { /* yaddaş yoxdur */ } };
   let tc = { min: 5, inc: 0 }, mineR = false, theirR = false, offerPly = -1, first = true;
+  let oppUid = null, gn = 0;
+  const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+  const sendIdent = () => { const u = window.__azmate?.auth?.user?.(); if (u?.id) net?.send('ident', { uid: u.id }); };
 
   const view = id => { for (const v of ['on-menu', 'on-live']) $(v).hidden = v !== id; };
   const showCode = code => { $('on-code').textContent = code || ''; $('on-room').hidden = !code; };
@@ -31,6 +34,7 @@ export function createOnline(x) {
 
   function startRematch() {
     mineR = theirR = false;
+    gn++;
     o.color = other(o.color);
     x.setFlip(o.color === 'b');
     x.newGame(tc);
@@ -102,12 +106,14 @@ export function createOnline(x) {
         const ok = (d.color === 'w' || d.color === 'b') && typeof d.key === 'string'
           && Number.isInteger(d.min) && d.min >= 1 && d.min <= 180
           && Number.isInteger(d.inc) && d.inc >= 0 && d.inc <= 60
+          && (d.gn == null || (Number.isInteger(d.gn) && d.gn >= 0 && d.gn < 1000))
           && Array.isArray(d.moves) && d.moves.length <= 1000
           && d.moves.every(s => typeof s === 'string' && s.length < 12)
           && d.ms && [d.ms.w, d.ms.b].every(v => Number.isFinite(v) && v >= 0)
           && (d.res == null || (RESULTS.has(d.res.reason) && [null, 'w', 'b'].includes(d.res.winner)));
         if (!ok) return;
         myKey = d.key;
+        gn = d.gn || 0;
         saveSes();
         tc = { min: d.min, inc: d.inc };
         o.color = d.color;
@@ -118,8 +124,12 @@ export function createOnline(x) {
         view('on-live');
         status('connected', 'ok');
         dlg.close();
+        sendIdent();
         return;
       }
+      case 'ident':
+        if (typeof d.uid === 'string' && UUID.test(d.uid)) oppUid = d.uid;
+        return;
       case 'move': {
         if (over || x.game.turn() === o.color) return; // yanlış sıra
         if (!SQ.test(d.from) || !SQ.test(d.to) || (d.promo !== undefined && !/^[qrbn]$/.test(d.promo))) return;
@@ -171,8 +181,9 @@ export function createOnline(x) {
     onReady: () => {
       mode(true);
       if (first) { x.newGame(tc); x.setFlip(o.color === 'b'); }
-      net.send('hello', { key: guestKey, color: other(o.color), min: tc.min, inc: tc.inc,
+      net.send('hello', { key: guestKey, color: other(o.color), min: tc.min, inc: tc.inc, gn,
         moves: x.game.history(), ms: x.clock.read(), res: x.result() });
+      sendIdent();
       view('on-live');
       status('connected', 'ok');
       dlg.close();
@@ -188,7 +199,7 @@ export function createOnline(x) {
 
   function teardown() {
     net?.leave();
-    net = null; role = null; guestKey = null; myKey = null;
+    net = null; role = null; guestKey = null; myKey = null; oppUid = null; gn = 0;
     mineR = theirR = false; offerPly = -1; pendingFx = null;
     mode(false);
     setDot(null);
@@ -211,25 +222,28 @@ export function createOnline(x) {
     view('on-live');
   }
 
-  $('on-create').addEventListener('click', async () => {
+  async function create(opts) {
     teardown();
     clearSes();
     const n = mk('host');
     n.gid = rid();
     o.color = Math.random() < 0.5 ? 'w' : 'b';
-    tc = { min: x.S.get().min, inc: x.S.get().inc };
+    tc = opts && opts.min ? { min: opts.min, inc: opts.inc || 0 } : { min: x.S.get().min, inc: x.S.get().inc };
     status('waiting', null);
     try {
       const code = await n.host();
-      if (net !== n) return;
+      if (net !== n) return null;
       showCode(code);
       $('on-rejoin').hidden = true;
       view('on-live');
+      return code;
     } catch {
       if (net === n) { x.toast(t('netError')); teardown(); }
+      return null;
     }
-  });
-  $('on-join').addEventListener('click', () => join($('on-input').value));
+  }
+  $('on-create').addEventListener('click', () => { o.matchId = null; create(); });
+  $('on-join').addEventListener('click', () => { o.matchId = null; join($('on-input').value); });
   $('on-rejoin').addEventListener('click', () => join(lastCode));
   $('on-input').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6); });
   $('on-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); join(e.target.value); } });
@@ -257,6 +271,7 @@ export function createOnline(x) {
   $('chat-send').addEventListener('click', sendChat);
   $('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sendChat(); } });
   $('on-leave').addEventListener('click', () => {
+    o.matchId = null;
     teardown();
     lastCode = null;
     clearSes();
@@ -278,6 +293,10 @@ export function createOnline(x) {
     if (pendingFx) { const n = pendingFx; pendingFx = null; setTimeout(() => runFx(n), 400); }
   };
   o.sendEnd = reason => net?.send('end', { reason });
+  o.matchId = null;
+  o.create = create;
+  o.join = join;
+  o.info = () => (o.active && net?.gid ? { gid: (net.gid + '.' + gn).toLowerCase(), oppUid, color: o.color, min: tc.min, inc: tc.inc, matchId: o.matchId } : null);
   o.fx = name => { if (net?.open && FX.has(name)) net.send('fx', { name }); };
   o.offerDraw = () => {
     const ply = x.game.history().length;

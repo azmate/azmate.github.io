@@ -1,5 +1,5 @@
 const PREFIX = 'azmate-';
-const TYPES = new Set(['join', 'hello', 'move', 'draw', 'drawAccept', 'drawDecline', 'end', 'rematch', 'chat', 'fx']);
+const TYPES = new Set(['join', 'hello', 'move', 'draw', 'drawAccept', 'drawDecline', 'end', 'rematch', 'chat', 'fx', 'ident']);
 const peerOpts = () => ({ config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478' }].concat(window.AZ_ICE || []) } });
 const newCode = () => String(100000 + (crypto.getRandomValues(new Uint32Array(1))[0] % 900000));
 

@@ -201,3 +201,49 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none
   animation:bgdrift 18s ease-in-out infinite alternate}
 @keyframes bgdrift{to{transform:translate3d(4%,3%,0) scale(1.08)}}
 [data-anim=off] body::before{animation:none}
+
+/* account / login */
+.top{justify-content:space-between}
+.acc-btn{min-height:28px;max-width:48vw;padding:0 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;color:var(--text-primary);background:var(--surface);border:1px solid var(--border)}
+.acc-btn:hover{background:var(--surface-hover)}
+.auth-dl{position:relative}
+.au-wide{width:100%}
+.au-or{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--text-secondary);font-size:13px}
+.au-or::before,.au-or::after{content:"";flex:1;height:1px;background:var(--border)}
+.au-f{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;font-size:13px;color:var(--text-secondary)}
+.au-f input{min-height:44px;padding:0 12px;border-radius:4px;color:var(--text-primary);background:var(--bg-secondary);border:1px solid var(--border);font-size:16px}
+.au-f input:focus{border-color:var(--accent-primary);outline:none}
+.auth-dl .acts{display:flex;gap:8px}.auth-dl .acts .btn{flex:1}
+.au-link{margin-top:10px;padding:6px 0;background:none;border:0;color:var(--accent-primary);cursor:pointer;font-size:13px}
+.au-msg{margin-top:12px;padding:10px 12px;border-radius:4px;font-size:14px;background:var(--bg-secondary);border:1px solid var(--border)}
+.au-msg.err{border-color:var(--danger);color:var(--danger)}
+.au-msg.ok{border-color:var(--success);color:var(--success)}
+
+/* header buttons, social, tournaments */
+.top-r{display:flex;align-items:center;gap:6px;min-width:0}
+.ic-btn{position:relative;width:36px;padding:0;font-size:16px;line-height:1}
+.bdg{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--danger);color:#fff;font:700 10px/16px system-ui,sans-serif;font-style:normal;text-align:center}
+.bdg[hidden]{display:none}
+.soc-dl{position:relative;max-height:min(86dvh,720px);overflow:auto}
+.soc-dl h2{margin-right:36px}
+.soc-dl h3{margin:16px 0 8px;font-size:13px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.04em}
+.sl{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.sr{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:4px;background:var(--bg-secondary);border:1px solid var(--border);font-size:14px}
+.sr .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.sr .nm small{display:block;font-weight:400;color:var(--text-secondary);font-size:12px;white-space:normal}
+.sr.me{border-color:var(--accent-primary)}
+.mini{min-height:34px;padding:0 10px;font-size:13px;cursor:pointer;border-radius:4px;color:var(--text-primary);background:var(--surface);border:1px solid var(--border)}
+.mini:hover{background:var(--surface-hover)}
+.mini.pri{background:var(--accent-primary);border-color:var(--accent-primary);color:#fff}
+.mini.dg{color:var(--danger)}
+.mini:disabled{opacity:.5;cursor:default}
+.soc-in{display:flex;gap:6px;margin:8px 0}
+.soc-in input,.soc-in select{flex:1;min-width:0;min-height:40px;padding:0 10px;border-radius:4px;color:var(--text-primary);background:var(--bg-secondary);border:1px solid var(--border);font-size:16px}
+.rt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.rt div{padding:10px 6px;text-align:center;border-radius:4px;background:var(--bg-secondary);border:1px solid var(--border);font-size:12px;color:var(--text-secondary)}
+.rt b{display:block;font-size:20px;color:var(--text-primary)}
+.au-stats .rt{margin-top:0}
+.empty{padding:10px 0;color:var(--text-secondary);font-size:14px}
+.rd{margin:12px 0 6px;font-size:12px;font-weight:700;color:var(--text-secondary)}
+.champ{padding:12px;text-align:center;border-radius:4px;font-weight:700;background:var(--bg-secondary);border:1px solid var(--success);color:var(--success)}
+.win{color:var(--success)}.lose{color:var(--danger)}

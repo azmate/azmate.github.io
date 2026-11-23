@@ -24,7 +24,12 @@
 </svg>
 <header class="top"><h1 class="brand" aria-label="AZMATE">
   <img class="brand-mark" src="logo.png" alt="" width="22" height="30">
-  <span>AZ<b>MATE</b></span></h1></header>
+  <span>AZ<b>MATE</b></span></h1>
+  <div class="top-r">
+    <button class="acc-btn ic-btn" id="b-friends" type="button" hidden aria-label="Dostlar" title="Dostlar">👥<i class="bdg" hidden></i></button>
+    <button class="acc-btn ic-btn" id="b-tour" type="button" hidden aria-label="Çempionat" title="Çempionat">🏆<i class="bdg" hidden></i></button>
+    <button class="acc-btn" id="b-acc" type="button" hidden>Daxil ol</button>
+  </div></header>
 <main class="game">
   <section class="bcol">
     <div id="pl-top"></div>
@@ -77,6 +82,34 @@
   </div>
 </form></dialog>
 <dialog id="dlg-draw" aria-labelledby="draw-title"><form method="dialog" class="dl"><h2 id="draw-title" data-i18n="drawOffer"></h2><p class="sub" data-i18n="drawQuestion"></p><div class="acts"><button class="btn pri" id="d-yes" type="button" data-i18n="accept"></button><button class="btn" id="d-no" type="button" data-i18n="decline"></button></div></form></dialog>
+<dialog id="dlg-auth" aria-labelledby="au-title"><div class="dl auth-dl">
+  <button class="dialog-x" id="au-close" type="button" aria-label="Bağla">×</button>
+  <div id="au-out">
+    <h2 id="au-title">Daxil ol</h2><p class="sub">Hesabla reytinq, dostlar və çempionatlarda iştirak edə bilərsən.</p>
+    <button class="btn pri au-wide" id="au-google" type="button">Google ilə daxil ol</button>
+    <div class="au-or"><span>və ya</span></div>
+    <form id="au-form" autocomplete="on" novalidate>
+      <label class="au-f"><span>Email</span><input id="au-email" type="email" autocomplete="email" inputmode="email" required></label>
+      <label class="au-f"><span>Parol (ən azı 8 simvol)</span><input id="au-pass" type="password" autocomplete="current-password" minlength="8" required></label>
+      <label class="au-f" id="au-name-row" hidden><span>İstifadəçi adı (3–20: hərf, rəqəm, _)</span><input id="au-name" maxlength="20" autocomplete="username"></label>
+      <div class="acts"><button class="btn pri" id="au-login" type="submit">Daxil ol</button><button class="btn" id="au-signup" type="button">Qeydiyyat</button></div>
+    </form>
+    <button class="au-link" id="au-forgot" type="button">Parolu unutmusan?</button>
+  </div>
+  <div id="au-in" hidden>
+    <h2>Hesabım</h2><p class="sub" id="au-mail"></p>
+    <label class="au-f"><span>İstifadəçi adı</span><input id="au-uname" maxlength="20" autocomplete="off"></label>
+    <div id="au-stats" class="au-stats"></div>
+    <div class="acts"><button class="btn pri" id="au-save" type="button">Yadda saxla</button><button class="btn" id="au-logout" type="button">Çıxış</button></div>
+    <button class="au-link" id="au-prof" type="button">Profilim və oyun tarixçəsi</button>
+  </div>
+  <p id="au-msg" class="au-msg" role="status" hidden></p>
+</div></dialog>
+
+<dialog id="dlg-friends" aria-label="Dostlar"><div class="dl soc-dl"><button class="dialog-x" data-close="dlg-friends" type="button" aria-label="Bağla">×</button><div id="fr-body"></div></div></dialog>
+<dialog id="dlg-profile" aria-label="Profil"><div class="dl soc-dl"><button class="dialog-x" data-close="dlg-profile" type="button" aria-label="Bağla">×</button><div id="pr-body"></div></div></dialog>
+<dialog id="dlg-tour" aria-label="Çempionat"><div class="dl soc-dl"><button class="dialog-x" data-close="dlg-tour" type="button" aria-label="Bağla">×</button><div id="tr-body"></div></div></dialog>
+
 <div id="toast" class="toast" hidden></div>
 
 <dialog id="dlg-result" aria-labelledby="r-title"><form method="dialog" class="dl">
@@ -109,6 +142,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script src="config.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script type="module" src="main.js"></script>
+<script type="module" src="auth.js"></script>
+<script type="module" src="social.js"></script>
+<script type="module" src="tournament.js"></script>
 </body>
 </html>
